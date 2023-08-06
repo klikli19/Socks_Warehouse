@@ -18,7 +18,9 @@ dependencies {
     implementation "org.springdoc:springdoc-openapi-ui:1.6.11"
     compileOnly 'org.projectlombok:lombok:1.18.28'
     annotationProcessor 'org.projectlombok:lombok:1.18.28'
-    implementation 'org.postgresql:postgresql:42.5.0'
+    implementation 'org.mapstruct:mapstruct:1.5.5.Final'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
+    implementation 'org.postgresql:postgresql:42.5.1'
     implementation 'org.liquibase:liquibase-core:4.19.0'
     testCompileOnly 'org.projectlombok:lombok:1.18.28'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.28'
