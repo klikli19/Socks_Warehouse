@@ -8,6 +8,9 @@ import pro.sky.model.Sock;
 
 import java.util.Optional;
 
+/**
+ * Репозиторий для работы с БД
+ */
 @Repository
 public interface SocksRepository extends JpaRepository<Sock, Long> {
     Optional<Sock> findSockByColorAndCottonPart(String color, Integer cottonPart);

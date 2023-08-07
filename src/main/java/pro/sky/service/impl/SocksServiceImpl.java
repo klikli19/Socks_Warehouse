@@ -12,6 +12,9 @@ import pro.sky.model.Sock;
 import pro.sky.repository.SocksRepository;
 import pro.sky.service.SocksService;
 
+/**
+ * Сервис имплементирующий SocksService
+ */
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -20,8 +23,14 @@ public class SocksServiceImpl implements SocksService {
     private final SocksMapper mapper;
 
 
+    /**
+     * Метод добавления носков на склад
+     * @param socksDTO данные о товаре, пришедшие от кладовщика
+     * @return сохраненные данныых по носкам в БД (на складе)
+     */
     @Override
     public SocksDTO addSocks(SocksDTO socksDTO) {
+        log.info("Request to add socks");
         Sock sock = repository.findSockByColorAndCottonPart(socksDTO.getColor(), socksDTO.getCottonPart()).
                 orElse(new Sock(null, socksDTO.getColor(), socksDTO.getCottonPart(), 0));
         if (sock.getQuantity() == 0) {
@@ -34,22 +43,37 @@ public class SocksServiceImpl implements SocksService {
         return mapper.toDto(sock);
     }
 
+    /**
+     * Метод по отпуску носков со склада
+     * @param socksDTO данные по товару, пришедшие от кладовщика
+     * @return оставшиеся носки в БД (на складе)
+     */
     @Override
     public SocksDTO releaseSocks(SocksDTO socksDTO) {
+        log.info("Request to release socks");
         Sock sock = repository.findSockByColorAndCottonPart(socksDTO.getColor(), socksDTO.getCottonPart()).orElseThrow(
                 () -> new SocksNotFoundException("На складе нет носков  с цветом: " + socksDTO.getColor() +
                         " и с содержанием хлопка равное: " + socksDTO.getCottonPart()));
         int quantity = sock.getQuantity() - socksDTO.getQuantity();
         if (quantity < 0) {
-            throw new RuntimeException("Количество пар не может быть отрицателбным числом");
+            throw new RuntimeException("Количество пар не может быть отрицательным числом");
         }
         sock.setQuantity(quantity);
         repository.save(sock);
         return mapper.toDto(sock);
     }
 
+    /**
+     * Метод получения общего количества носков на складе, соответствующих переданным данным
+     * @param color цвет носков
+     * @param cottonPart процент хлопка
+     * @param operation оператор сравнения
+     * @return количество носков, соответствующих введенным данным
+     */
     @Override
     public Long getTotalNumberOfSocks(String color, Integer cottonPart, String operation) {
+        log.info("Request to get total number of socks by color: " + color + ", cotton: " + cottonPart + ", operation: " +
+                operation);
         Operation operation1 = Operation.fromValue(operation).orElseThrow(IllegalAccessError::new);
         try {
             switch (operation1) {
